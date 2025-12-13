@@ -9,7 +9,7 @@ export class SubscriptionPlan extends Model {
   public readonly updatedAt!: Date;
 }
 
-export const SubscriptionPlanModel = (sequelize: Sequelize) => {
+export default (sequelize: Sequelize) => {
   SubscriptionPlan.init(
     {
       id: {

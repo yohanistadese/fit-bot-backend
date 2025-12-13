@@ -15,7 +15,7 @@ export class Transaction extends Model {
   public readonly updatedAt!: Date;
 }
 
-export const TransactionModel = (sequelize: Sequelize) => {
+export default (sequelize: Sequelize) => {
   Transaction.init(
     {
       id: {
