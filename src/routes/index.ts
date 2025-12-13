@@ -4,12 +4,14 @@ import ServerResponse from "../utilities/response/Response";
 
 const startTime = new Date();
 
-import userRoutes from "./User";
-import systemRoutes from "./System";
+import UserRoutes from "./User";
+import SystemRoutes from "./System";
+import ChatRoutes from "./Chat";
 
 let routes = (app: Application) => {
-  app.use(userRoutes());
-  app.use(systemRoutes());
+  app.use(UserRoutes());
+  app.use(SystemRoutes());
+  app.use(ChatRoutes());
 
   app.get("/", (req: Request, res: Response) => {
     return ServerResponse(
