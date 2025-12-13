@@ -105,56 +105,24 @@ export const EmailType = {
   SUBSCRIPTION_RENEWED: "renewed",
 };
 
-export const InvestmentStatus = {
-  PENDING: "pending",
+export const CartStatus = {
   ACTIVE: "active",
-  MATURED: "matured",
-  CANCELLED: "cancelled",
   COMPLETED: "completed",
-  EXPIRED: "expired",
-};
-
-export const InvestmentPlans = {
-  SILVER: "Silver",
-  GOLD: "Gold",
-  PLATINUM: "Platinum",
-};
-
-export const RateType = {
-  MONTHLY: "monthly",
-  YEARLY: "yearly",
-  TOTAL: "total",
-};
-
-export const InvestmentTerms = {
-  THREE_MONTHS: "3-months",
-  SIX_MONTHS: "6-months",
-};
-
-export const TransactionType = {
-  DEPOSIT: "deposit", // User investment deposit
-  RETURN: "return", // Investment profit or return payout
-  WITHDRAWAL: "withdrawal", // User-initiated withdrawal
-  COMMISSION: "commission", // Referral commission payout
-};
-
-export const TransactionStatus = {
-  PENDING: "pending",
-  SUCCESS: "success",
-  FAILED: "failed",
-};
-
-export const WithdrawalStatus = {
-  PENDING: "pending",
-  SUCCESS: "success",
-  FAILED: "failed",
   CANCELLED: "cancelled",
 };
 
-export const InvestmentReturnStatus = {
+export const OrderStatus = {
   PENDING: "pending",
-  PAID: "paid",
+  COMPLETED: "completed",
+  CANCELLED: "cancelled",
   FAILED: "failed",
+};
+
+export const PaymentStatus = {
+  PENDING: "pending",
+  COMPLETED: "completed",
+  FAILED: "failed",
+  REFUNDED: "refunded",
 };
 
 export const PayementMethod = {
@@ -170,40 +138,9 @@ export const PaymentAccountType = {
   BANK: "bank",
 };
 
-// Sales Representative
-export const ReferralType = {
-  PROMO: "promo_code",
-  INVITE: "invite",
-};
-
-export const ReferralStatus = {
-  PENDING: "pending",
-  ACTIVE: "active",
-  INACTIVE: "inactive",
-  BLOCKED: "blocked",
-  ARCHIVED: "archived",
-};
-
-export const CommissionType = {
-  PERCENTAGE: "percentage",
-  FIXED: "fixed",
-};
-
-export const LimitType = {
-  HIT: "hit",
-  REGISTRATION: "registration",
-};
-
 export const AdminApprovalStatus = {
   PENDING: "pending",
   APPROVED: "approved",
-  REJECTED: "rejected",
-};
-
-export const PayoutStatus = {
-  PENDING: "pending",
-  PAID: "paid",
-  FAILED: "failed",
   REJECTED: "rejected",
 };
 

@@ -1,6 +1,6 @@
 import { Sequelize, Transaction } from "sequelize";
 import { env } from "../config";
-// import { ModelSync } from "../models";
+import { ModelSync } from "../models";
 import LogService from "../services/Log/Log.service";
 
 // Sequelize instance
@@ -39,7 +39,7 @@ export const sequelize = new Sequelize(
 export const initializeDatabase = async (): Promise<boolean> => {
   try {
     await sequelize.authenticate();
-    // ModelSync(sequelize);
+    ModelSync(sequelize);
     await sequelize.sync({
       logging: true,
       alter: false,
