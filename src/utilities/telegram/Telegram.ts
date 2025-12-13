@@ -1,6 +1,6 @@
 import axios from "axios";
 import LogService from "../../services/Log/Log.service";
-import { LogTypes } from "../constant/Constants";
+import { LogTypes } from "../constants/Constants";
 
 class TelegramBot {
   private static token = process.env.TELEGRAM_BOT_TOKEN || "";

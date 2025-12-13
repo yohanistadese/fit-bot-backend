@@ -1,4 +1,4 @@
-import { LogTypes } from "../../utilities/constant/Constants";
+import { LogTypes } from "../../utilities/constants/Constants";
 import { logger } from "../../utilities/logger/Logger";
 import { TelegramBot } from "../../utilities/telegram/Telegram";
 

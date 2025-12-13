@@ -1,14 +1,17 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
+import { UserStatus } from "../../utilities/constants/Constants";
 
 export class User extends Model {
   public id!: string;
-  public first_name!: string;
-  public last_name!: string;
-  public telegram_user_id!: string;
   public status!: string;
+  public telegram_user_id!: string;
+  public telegram_user_name!: string;
+  public email!: string;
+  public name!: string;
+  public is_subscriber!: boolean;
+  public stripe_customer_id!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
-  public readonly deletedAt!: Date;
 }
 
 export default (sequelize: Sequelize) => {
@@ -20,21 +23,38 @@ export default (sequelize: Sequelize) => {
         allowNull: false,
         defaultValue: DataTypes.UUIDV4,
       },
-      first_name: {
+      status: {
         type: DataTypes.STRING,
         allowNull: false,
-      },
-      last_name: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        defaultValue: UserStatus.PENDING,
+        validate: {
+          isIn: [Object.values(UserStatus)],
+        },
       },
       telegram_user_id: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      status: {
+      telegram_user_name: {
         type: DataTypes.STRING,
+        allowNull: true,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      is_subscriber: {
+        type: DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: false,
+      },
+      stripe_customer_id: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
     },
     {
@@ -42,16 +62,10 @@ export default (sequelize: Sequelize) => {
       paranoid: true,
       modelName: "user",
       tableName: "users",
-      defaultScope: {
-        attributes: { exclude: [] },
-      },
       indexes: [
-        {
-          fields: ["telegram_user_id"],
-        },
-        {
-          fields: ["status"],
-        },
+        { fields: ["telegram_user_id"] },
+        { fields: ["email"] },
+        { fields: ["stripe_customer_id"] },
       ],
     }
   );

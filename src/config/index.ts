@@ -1,4 +1,4 @@
-import { AccessRole } from "../utilities/constant/Constants";
+import { AccessRole } from "../utilities/constants/Constants";
 
 export const DB_TYPES = {
   MYSQL: "mysql",
