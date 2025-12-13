@@ -1,11 +1,10 @@
+// -------------------- REGEX --------------------
 export const PasswordRegex =
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\\w\\s]).{8,16}$/;
-// Email must be a valid address and end with a TLD of at least 3 letters
 export const EmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{3,}$/;
-
-// Phone must include country code, minimum 10 digits total (E.164 compliant)
 export const PhoneNumberRegex = /^\+[1-9]\d{7,14}$/;
 
+// -------------------- EXPORT / CURRENCY --------------------
 export const ExportFormat = {
   CSV: "csv",
   EXCEL: "excel",
@@ -22,26 +21,12 @@ export const SupportedCrypto = {
   ETH: "eth",
 };
 
+// -------------------- LOGGING --------------------
 export const LogTypes = {
   REQUEST: "Request",
   ERROR: "Error",
   ACTION: "Action",
   INFO: "Info",
-};
-
-export const AccessRole = {
-  SYSTEM: "system",
-  ADMIN: "admin",
-  SALES_REP: "sales_rep",
-  INVESTOR: "investor",
-};
-
-export const UserStatus = {
-  PENDING: "pending",
-  ACTIVE: "active",
-  INACTIVE: "inactive",
-  BLOCKED: "blocked",
-  ARCHIVED: "archived",
 };
 
 export const LogActions = {
@@ -55,6 +40,28 @@ export const LogActions = {
   FETCH: "Fetch",
 };
 
+// -------------------- USER --------------------
+export const UserRole = {
+  SYSTEM: "system",
+  ADMIN: "admin",
+  USER: "user",
+};
+
+export const UserStatus = {
+  PENDING: "pending",
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+  BLOCKED: "blocked",
+  ARCHIVED: "archived",
+};
+
+export const Gender = {
+  MALE: "male",
+  FEMALE: "female",
+  OTHER: "other",
+};
+
+// -------------------- VERIFICATION / NOTIFICATION --------------------
 export const VerificationType = {
   EMAIL_VERIFICATION: "email_verification",
   PASSWORD_RECOVERY: "password_recovery",
@@ -93,18 +100,13 @@ export const NotificationCategory = {
   INFO: "Info",
 };
 
-export const Gender = {
-  MALE: "male",
-  FEMALE: "female",
-  OTHER: "other",
-};
-
 export const EmailType = {
   PASSWORD_RECOVERY: "passwordRecovery",
   EMAIL_VERIFICATION: "verification",
   SUBSCRIPTION_RENEWED: "renewed",
 };
 
+// -------------------- CART / ORDER / PAYMENT --------------------
 export const CartStatus = {
   ACTIVE: "active",
   COMPLETED: "completed",
@@ -125,6 +127,22 @@ export const PaymentStatus = {
   REFUNDED: "refunded",
 };
 
+export const SubscriptionStatus = {
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+  CANCELLED: "cancelled",
+  EXPIRED: "expired",
+  PENDING: "pending",
+};
+
+export const TransactionStatus = {
+  PENDING: "pending",
+  SUCCESS: "success",
+  FAILED: "failed",
+  REFUNDED: "refunded",
+  CANCELLED: "cancelled",
+};
+
 export const PayementMethod = {
   STRIPE: "stripe",
   CRYPTO: "crypto",
@@ -138,6 +156,7 @@ export const PaymentAccountType = {
   BANK: "bank",
 };
 
+// -------------------- ADMIN / PROMO --------------------
 export const AdminApprovalStatus = {
   PENDING: "pending",
   APPROVED: "approved",

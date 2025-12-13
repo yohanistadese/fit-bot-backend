@@ -1,9 +1,10 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
-import { UserStatus } from "../../utilities/constants/Constants";
+import { UserRole, UserStatus } from "../../utilities/constants/Constants";
 
 export class User extends Model {
   public id!: string;
   public status!: string;
+  public role!: string;
   public telegram_user_id!: string;
   public telegram_user_name!: string;
   public email!: string;
@@ -29,6 +30,14 @@ export default (sequelize: Sequelize) => {
         defaultValue: UserStatus.PENDING,
         validate: {
           isIn: [Object.values(UserStatus)],
+        },
+      },
+      role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: UserRole.USER,
+        validate: {
+          isIn: [Object.values(UserRole)],
         },
       },
       telegram_user_id: {
