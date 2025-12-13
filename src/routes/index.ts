@@ -4,14 +4,20 @@ import ServerResponse from "../utilities/response/Response";
 
 const startTime = new Date();
 
+import userRoutes from "./User";
+import systemRoutes from "./System";
+
 let routes = (app: Application) => {
+  app.use(userRoutes());
+  app.use(systemRoutes());
+
   app.get("/", (req: Request, res: Response) => {
     return ServerResponse(
       req,
       res,
       200,
       {
-        name: "Tap Trade API",
+        name: "Fit Bot API",
         version: "1.0.0",
       },
       "Success",

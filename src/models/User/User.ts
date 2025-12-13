@@ -11,6 +11,7 @@ export class User extends Model {
   public name!: string;
   public is_subscriber!: boolean;
   public stripe_customer_id!: string;
+  public ip_address!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
