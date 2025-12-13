@@ -61,7 +61,12 @@ export default (sequelize: Sequelize) => {
       paranoid: true,
       modelName: "action_log",
       tableName: "action_logs",
-      indexes: [{ fields: ["action"] }, { fields: ["object"] }],
+      indexes: [
+        {
+          fields: ["action"],
+        },
+        { fields: ["object"] },
+      ],
     }
   );
 };

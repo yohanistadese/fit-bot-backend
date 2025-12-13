@@ -1,19 +1,9 @@
-import { AccessRole } from "../utilities/constants/Constants";
-
 export const DB_TYPES = {
   MYSQL: "mysql",
   POSTGRES: "postgres",
 };
 
 export const isProduction = process.env.PRODUCTION === "true";
-
-const getDBType = (type?: string) => {
-  if (type) {
-    if (Object.values(DB_TYPES).indexOf(type) !== -1) return type;
-  }
-  return DB_TYPES.POSTGRES;
-};
-
 export const env: any = {
   // Application Settings
   PORT: process.env.PORT || 3000,
@@ -75,21 +65,7 @@ export const constants: any = {
   SYSTEM_CONFIG_KEY: "System Init",
   SYSTEM_CONFIG_TYPE: "string",
   SYSTEM_CONFIG_VALUE: "True",
-  BASE_FIRST_NAME: "Boingo",
-  BASE_LAST_NAME: "Super Admin",
-  BASE_PHONE_NUMBER: "251930538714",
-  BASE_ROLE_ID: "e48f7ed1-db16-4511-be6a-87ef32aab99d",
-  DEFAULT_USER_ID: "e48f7ed1-db16-4611-be3a-87ef32aab99d",
-  BASE_ROLE: AccessRole.SYSTEM,
-  BASE_EMAIL: "boingoaisuperadmin@gmail.com",
-  BASE_PASSWORD: "1q2w3e4sr5t6ey7u8i9o0p",
-
-  BROKER_ROLE: "Broker Role",
-  USER_ROLE: "User Role",
-
-  SUPER_ADMIN_ROLE_ID: "e48f7ed1-db16-4511-be6a-87ef32aab99d",
-  ADMIN_ROLE_ID: "8edbc138-affb-476f-8917-0d5b66e26a50",
-  PRESALE_LISTING_TYPE_ID: "1fa97590-2d11-46fb-85a2-30e4d966d729",
+  BASE_NAME: "Fit Bot",
 };
 
 export const UploadConstants = {
