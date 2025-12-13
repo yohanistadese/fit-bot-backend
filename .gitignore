@@ -8,6 +8,7 @@ swagger.json
 ### Node ###
 # Logs
 logs
+dev_logs
 xlogs
 uploads
 uploads_
