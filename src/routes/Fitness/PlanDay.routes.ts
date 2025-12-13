@@ -1,23 +1,23 @@
 import express from "express";
-import { ConversationSessionController } from "../../controllers/Chat";
+import PlanDayController from "../../controllers/Fitness/PlanDay.controller";
 import { AuthenticateUser, AuthorizeAccess } from "../../middleware/Auth/Auth";
 
 const routes = () => {
   /**
    * @swagger
    * tags:
-   *   name: ConversationSession
-   *   description: ConversationSession management APIs
+   *   name: PlanDay
+   *   description: PlanDay management APIs
    */
 
   const router = express.Router();
 
   /**
    * @swagger
-   * /conversation-sessions/get:
+   * /plan-days/get:
    *   get:
-   *     summary: Fetch a ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Fetch a PlanDay
+   *     tags: [PlanDay]
    *     parameters:
    *       - in: query
    *         name: query
@@ -30,20 +30,20 @@ const routes = () => {
     "/get",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findOne
+    PlanDayController.findOne
   );
 
   /**
    * @swagger
-   * /conversation-sessions/{id}:
+   * /plan-days/{id}:
    *   get:
-   *     summary: Fetch ConversationSession by ID
-   *     tags: [ConversationSession]
+   *     summary: Fetch PlanDay by ID
+   *     tags: [PlanDay]
    *     parameters:
    *       - in: path
    *         name: id
    *         required: true
-   *         description: ConversationSession ID
+   *         description: PlanDay ID
    *       - in: query
    *         name: query
    *         description: query
@@ -53,21 +53,21 @@ const routes = () => {
    *       400:
    *         description: Input Validation Error
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: PlanDay Not Found
    */
   router.get(
     "/:id",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findById
+    PlanDayController.findById
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /plan-days:
    *   get:
-   *     summary: Fetch ConversationSessions
-   *     tags: [ConversationSession]
+   *     summary: Fetch PlanDays
+   *     tags: [PlanDay]
    *     parameters:
    *       - in: query
    *         name: query
@@ -80,15 +80,15 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findMany
+    PlanDayController.findMany
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /plan-days:
    *   post:
-   *     summary: Create ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Create PlanDay
+   *     tags: [PlanDay]
    *     responses:
    *       201:
    *         description: Success
@@ -97,15 +97,15 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.create
+    PlanDayController.create
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /plan-days:
    *   put:
-   *     summary: Update ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Update PlanDay
+   *     tags: [PlanDay]
    *     responses:
    *       200:
    *         description: Success
@@ -114,45 +114,45 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.update
+    PlanDayController.update
   );
 
   /**
    * @swagger
-   * /conversation-sessions/restore:
-   *   put:
-   *     summary: Restore ConversationSession
-   *     tags: [ConversationSession]
+   * /plan-days/restore:
+   *   patch:
+   *     summary: Restore PlanDay
+   *     tags: [PlanDay]
    *     responses:
    *       200:
    *         description: Success
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: PlanDay Not Found
    */
   router.put(
     "/restore",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin"]),
-    ConversationSessionController.restore
+    AuthorizeAccess(["system"]),
+    PlanDayController.restore
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /plan-days:
    *   delete:
-   *     summary: Delete ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Delete PlanDay
+   *     tags: [PlanDay]
    *     responses:
    *       200:
    *         description: Success
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: PlanDay Not Found
    */
   router.delete(
     "/",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin"]),
-    ConversationSessionController.delete
+    AuthorizeAccess(["system", "admin", "user"]),
+    PlanDayController.delete
   );
 
   return router;

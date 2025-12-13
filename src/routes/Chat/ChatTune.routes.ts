@@ -29,7 +29,7 @@ const routes = () => {
   router.get(
     "/get",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin"]),
+    AuthorizeAccess(["system", "admin", "user"]),
     ChatTuneController.findOne
   );
 
@@ -58,7 +58,7 @@ const routes = () => {
   router.get(
     "/:id",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin"]),
+    AuthorizeAccess(["system", "admin", "user"]),
     ChatTuneController.findById
   );
 
@@ -79,7 +79,7 @@ const routes = () => {
   router.get(
     "/",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin"]),
+    AuthorizeAccess(["system", "admin", "user"]),
     ChatTuneController.findMany
   );
 
@@ -96,7 +96,7 @@ const routes = () => {
   router.post(
     "/",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin"]),
+    AuthorizeAccess(["system", "admin", "user"]),
     ChatTuneController.create
   );
 
@@ -113,7 +113,7 @@ const routes = () => {
   router.put(
     "/",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin"]),
+    AuthorizeAccess(["system", "admin", "user"]),
     ChatTuneController.update
   );
 

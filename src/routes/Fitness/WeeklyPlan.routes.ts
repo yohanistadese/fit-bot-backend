@@ -1,23 +1,23 @@
 import express from "express";
-import { ConversationSessionController } from "../../controllers/Chat";
+import { WeeklyPlanController } from "../../controllers/Fitness";
 import { AuthenticateUser, AuthorizeAccess } from "../../middleware/Auth/Auth";
 
 const routes = () => {
   /**
    * @swagger
    * tags:
-   *   name: ConversationSession
-   *   description: ConversationSession management APIs
+   *   name: WeeklyPlan
+   *   description: WeeklyPlan management APIs
    */
 
   const router = express.Router();
 
   /**
    * @swagger
-   * /conversation-sessions/get:
+   * /weekly-plans/get:
    *   get:
-   *     summary: Fetch a ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Fetch a WeeklyPlan
+   *     tags: [WeeklyPlan]
    *     parameters:
    *       - in: query
    *         name: query
@@ -30,20 +30,20 @@ const routes = () => {
     "/get",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findOne
+    WeeklyPlanController.findOne
   );
 
   /**
    * @swagger
-   * /conversation-sessions/{id}:
+   * /weekly-plans/{id}:
    *   get:
-   *     summary: Fetch ConversationSession by ID
-   *     tags: [ConversationSession]
+   *     summary: Fetch WeeklyPlan by ID
+   *     tags: [WeeklyPlan]
    *     parameters:
    *       - in: path
    *         name: id
    *         required: true
-   *         description: ConversationSession ID
+   *         description: WeeklyPlan ID
    *       - in: query
    *         name: query
    *         description: query
@@ -53,21 +53,21 @@ const routes = () => {
    *       400:
    *         description: Input Validation Error
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: WeeklyPlan Not Found
    */
   router.get(
     "/:id",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findById
+    WeeklyPlanController.findById
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /weekly-plans:
    *   get:
-   *     summary: Fetch ConversationSessions
-   *     tags: [ConversationSession]
+   *     summary: Fetch WeeklyPlans
+   *     tags: [WeeklyPlan]
    *     parameters:
    *       - in: query
    *         name: query
@@ -80,15 +80,15 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findMany
+    WeeklyPlanController.findMany
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /weekly-plans:
    *   post:
-   *     summary: Create ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Create WeeklyPlan
+   *     tags: [WeeklyPlan]
    *     responses:
    *       201:
    *         description: Success
@@ -97,15 +97,15 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.create
+    WeeklyPlanController.create
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /weekly-plans:
    *   put:
-   *     summary: Update ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Update WeeklyPlan
+   *     tags: [WeeklyPlan]
    *     responses:
    *       200:
    *         description: Success
@@ -114,45 +114,45 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.update
+    WeeklyPlanController.update
   );
 
   /**
    * @swagger
-   * /conversation-sessions/restore:
-   *   put:
-   *     summary: Restore ConversationSession
-   *     tags: [ConversationSession]
+   * /weekly-plans/restore:
+   *   patch:
+   *     summary: Restore WeeklyPlan
+   *     tags: [WeeklyPlan]
    *     responses:
    *       200:
    *         description: Success
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: WeeklyPlan Not Found
    */
   router.put(
     "/restore",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin"]),
-    ConversationSessionController.restore
+    AuthorizeAccess(["system", "admin", "user"]),
+    WeeklyPlanController.restore
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /weekly-plans:
    *   delete:
-   *     summary: Delete ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Delete WeeklyPlan
+   *     tags: [WeeklyPlan]
    *     responses:
    *       200:
    *         description: Success
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: WeeklyPlan Not Found
    */
   router.delete(
     "/",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin"]),
-    ConversationSessionController.delete
+    AuthorizeAccess(["system", "admin", "user"]),
+    WeeklyPlanController.delete
   );
 
   return router;

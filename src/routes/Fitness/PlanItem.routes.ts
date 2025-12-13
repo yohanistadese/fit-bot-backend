@@ -1,23 +1,23 @@
 import express from "express";
-import { ConversationSessionController } from "../../controllers/Chat";
+import { PlanItemController } from "../../controllers/Fitness";
 import { AuthenticateUser, AuthorizeAccess } from "../../middleware/Auth/Auth";
 
 const routes = () => {
   /**
    * @swagger
    * tags:
-   *   name: ConversationSession
-   *   description: ConversationSession management APIs
+   *   name: PlanItem
+   *   description: PlanItem management APIs
    */
 
   const router = express.Router();
 
   /**
    * @swagger
-   * /conversation-sessions/get:
+   * /plan-items/get:
    *   get:
-   *     summary: Fetch a ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Fetch a PlanItem
+   *     tags: [PlanItem]
    *     parameters:
    *       - in: query
    *         name: query
@@ -30,20 +30,20 @@ const routes = () => {
     "/get",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findOne
+    PlanItemController.findOne
   );
 
   /**
    * @swagger
-   * /conversation-sessions/{id}:
+   * /plan-items/{id}:
    *   get:
-   *     summary: Fetch ConversationSession by ID
-   *     tags: [ConversationSession]
+   *     summary: Fetch PlanItem by ID
+   *     tags: [PlanItem]
    *     parameters:
    *       - in: path
    *         name: id
    *         required: true
-   *         description: ConversationSession ID
+   *         description: PlanItem ID
    *       - in: query
    *         name: query
    *         description: query
@@ -53,21 +53,21 @@ const routes = () => {
    *       400:
    *         description: Input Validation Error
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: PlanItem Not Found
    */
   router.get(
     "/:id",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findById
+    PlanItemController.findById
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /plan-items:
    *   get:
-   *     summary: Fetch ConversationSessions
-   *     tags: [ConversationSession]
+   *     summary: Fetch PlanItems
+   *     tags: [PlanItem]
    *     parameters:
    *       - in: query
    *         name: query
@@ -80,15 +80,15 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findMany
+    PlanItemController.findMany
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /plan-items:
    *   post:
-   *     summary: Create ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Create PlanItem
+   *     tags: [PlanItem]
    *     responses:
    *       201:
    *         description: Success
@@ -97,15 +97,15 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.create
+    PlanItemController.create
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /plan-items:
    *   put:
-   *     summary: Update ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Update PlanItem
+   *     tags: [PlanItem]
    *     responses:
    *       200:
    *         description: Success
@@ -114,45 +114,45 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.update
+    PlanItemController.update
   );
 
   /**
    * @swagger
-   * /conversation-sessions/restore:
-   *   put:
-   *     summary: Restore ConversationSession
-   *     tags: [ConversationSession]
+   * /plan-items/restore:
+   *   patch:
+   *     summary: Restore PlanItem
+   *     tags: [PlanItem]
    *     responses:
    *       200:
    *         description: Success
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: PlanItem Not Found
    */
   router.put(
     "/restore",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin"]),
-    ConversationSessionController.restore
+    PlanItemController.restore
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /plan-items:
    *   delete:
-   *     summary: Delete ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Delete PlanItem
+   *     tags: [PlanItem]
    *     responses:
    *       200:
    *         description: Success
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: PlanItem Not Found
    */
   router.delete(
     "/",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin"]),
-    ConversationSessionController.delete
+    AuthorizeAccess(["system", "admin", "user"]),
+    PlanItemController.delete
   );
 
   return router;

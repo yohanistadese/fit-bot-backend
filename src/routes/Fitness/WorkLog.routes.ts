@@ -1,23 +1,23 @@
 import express from "express";
-import { ConversationSessionController } from "../../controllers/Chat";
+import { WorkLogController } from "../../controllers/Fitness";
 import { AuthenticateUser, AuthorizeAccess } from "../../middleware/Auth/Auth";
 
 const routes = () => {
   /**
    * @swagger
    * tags:
-   *   name: ConversationSession
-   *   description: ConversationSession management APIs
+   *   name: WorkLog
+   *   description: WorkLog management APIs
    */
 
   const router = express.Router();
 
   /**
    * @swagger
-   * /conversation-sessions/get:
+   * /work-logs/get:
    *   get:
-   *     summary: Fetch a ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Fetch a WorkLog
+   *     tags: [WorkLog]
    *     parameters:
    *       - in: query
    *         name: query
@@ -29,21 +29,21 @@ const routes = () => {
   router.get(
     "/get",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findOne
+    AuthorizeAccess(["system", "admin"]),
+    WorkLogController.findOne
   );
 
   /**
    * @swagger
-   * /conversation-sessions/{id}:
+   * /work-logs/{id}:
    *   get:
-   *     summary: Fetch ConversationSession by ID
-   *     tags: [ConversationSession]
+   *     summary: Fetch WorkLog by ID
+   *     tags: [WorkLog]
    *     parameters:
    *       - in: path
    *         name: id
    *         required: true
-   *         description: ConversationSession ID
+   *         description: WorkLog ID
    *       - in: query
    *         name: query
    *         description: query
@@ -53,21 +53,21 @@ const routes = () => {
    *       400:
    *         description: Input Validation Error
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: WorkLog Not Found
    */
   router.get(
     "/:id",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findById
+    AuthorizeAccess(["system", "admin"]),
+    WorkLogController.findById
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /work-logs:
    *   get:
-   *     summary: Fetch ConversationSessions
-   *     tags: [ConversationSession]
+   *     summary: Fetch WorkLogs
+   *     tags: [WorkLog]
    *     parameters:
    *       - in: query
    *         name: query
@@ -79,16 +79,16 @@ const routes = () => {
   router.get(
     "/",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findMany
+    AuthorizeAccess(["system", "admin"]),
+    WorkLogController.findMany
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /work-logs:
    *   post:
-   *     summary: Create ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Create WorkLog
+   *     tags: [WorkLog]
    *     responses:
    *       201:
    *         description: Success
@@ -96,16 +96,16 @@ const routes = () => {
   router.post(
     "/",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.create
+    AuthorizeAccess(["system", "admin"]),
+    WorkLogController.create
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /work-logs:
    *   put:
-   *     summary: Update ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Update WorkLog
+   *     tags: [WorkLog]
    *     responses:
    *       200:
    *         description: Success
@@ -113,46 +113,46 @@ const routes = () => {
   router.put(
     "/",
     AuthenticateUser,
-    AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.update
+    AuthorizeAccess(["system", "admin"]),
+    WorkLogController.update
   );
 
   /**
    * @swagger
-   * /conversation-sessions/restore:
-   *   put:
-   *     summary: Restore ConversationSession
-   *     tags: [ConversationSession]
+   * /work-logs/restore:
+   *   patch:
+   *     summary: Restore WorkLog
+   *     tags: [WorkLog]
    *     responses:
    *       200:
    *         description: Success
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: WorkLog Not Found
    */
   router.put(
     "/restore",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin"]),
-    ConversationSessionController.restore
+    WorkLogController.restore
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /work-logs:
    *   delete:
-   *     summary: Delete ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Delete WorkLog
+   *     tags: [WorkLog]
    *     responses:
    *       200:
    *         description: Success
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: WorkLog Not Found
    */
   router.delete(
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin"]),
-    ConversationSessionController.delete
+    WorkLogController.delete
   );
 
   return router;
