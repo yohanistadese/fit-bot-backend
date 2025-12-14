@@ -5,6 +5,8 @@ export class SubscriptionPlan extends Model {
   public name!: string;
   public price!: number;
   public currency!: number;
+  public amenities!: string[];
+  public description!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -29,6 +31,14 @@ export default (sequelize: Sequelize) => {
       currency: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      amenities: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: true,
+      },
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: true,
       },
     },
     {
