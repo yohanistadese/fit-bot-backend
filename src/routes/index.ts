@@ -7,11 +7,13 @@ const startTime = new Date();
 import UserRoutes from "./User";
 import SystemRoutes from "./System";
 import ChatRoutes from "./Chat";
+import FitnessRoutes from "./Fitness";
 
 let routes = (app: Application) => {
   app.use(UserRoutes());
   app.use(SystemRoutes());
   app.use(ChatRoutes());
+  app.use(FitnessRoutes());
 
   app.get("/", (req: Request, res: Response) => {
     return ServerResponse(

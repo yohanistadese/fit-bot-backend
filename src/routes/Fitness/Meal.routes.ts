@@ -1,23 +1,23 @@
 import express from "express";
-import { ConversationSessionController } from "../../controllers/Chat";
+import { MealController } from "../../controllers/Fitness";
 import { AuthenticateUser, AuthorizeAccess } from "../../middleware/Auth/Auth";
 
 const routes = () => {
   /**
    * @swagger
    * tags:
-   *   name: ConversationSession
-   *   description: ConversationSession management APIs
+   *   name: Meal
+   *   description: Meal management APIs
    */
 
   const router = express.Router();
 
   /**
    * @swagger
-   * /conversation-sessions/get:
+   * /meals/get:
    *   get:
-   *     summary: Fetch a ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Fetch a Meal
+   *     tags: [Meal]
    *     parameters:
    *       - in: query
    *         name: query
@@ -30,20 +30,20 @@ const routes = () => {
     "/get",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findOne
+    MealController.findOne
   );
 
   /**
    * @swagger
-   * /conversation-sessions/{id}:
+   * /meals/{id}:
    *   get:
-   *     summary: Fetch ConversationSession by ID
-   *     tags: [ConversationSession]
+   *     summary: Fetch Meal by ID
+   *     tags: [Meal]
    *     parameters:
    *       - in: path
    *         name: id
    *         required: true
-   *         description: ConversationSession ID
+   *         description: Meal ID
    *       - in: query
    *         name: query
    *         description: query
@@ -53,21 +53,21 @@ const routes = () => {
    *       400:
    *         description: Input Validation Error
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: Meal Not Found
    */
   router.get(
     "/:id",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findById
+    MealController.findById
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /meals:
    *   get:
-   *     summary: Fetch ConversationSessions
-   *     tags: [ConversationSession]
+   *     summary: Fetch Meals
+   *     tags: [Meal]
    *     parameters:
    *       - in: query
    *         name: query
@@ -80,15 +80,15 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findMany
+    MealController.findMany
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /meals:
    *   post:
-   *     summary: Create ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Create Meal
+   *     tags: [Meal]
    *     responses:
    *       201:
    *         description: Success
@@ -97,15 +97,15 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.create
+    MealController.create
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /meals:
    *   put:
-   *     summary: Update ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Update Meal
+   *     tags: [Meal]
    *     responses:
    *       200:
    *         description: Success
@@ -114,45 +114,45 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.update
+    MealController.update
   );
 
   /**
    * @swagger
-   * /conversation-sessions/restore:
-   *   put:
-   *     summary: Restore ConversationSession
-   *     tags: [ConversationSession]
+   * /meals/restore:
+   *   patch:
+   *     summary: Restore Meal
+   *     tags: [Meal]
    *     responses:
    *       200:
    *         description: Success
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: Meal Not Found
    */
   router.put(
     "/restore",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin"]),
-    ConversationSessionController.restore
+    MealController.restore
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /meals:
    *   delete:
-   *     summary: Delete ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Delete Meal
+   *     tags: [Meal]
    *     responses:
    *       200:
    *         description: Success
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: Meal Not Found
    */
   router.delete(
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin"]),
-    ConversationSessionController.delete
+    MealController.delete
   );
 
   return router;

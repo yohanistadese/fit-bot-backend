@@ -1,23 +1,23 @@
 import express from "express";
-import { ConversationSessionController } from "../../controllers/Chat";
+import { ExerciseController } from "../../controllers/Fitness";
 import { AuthenticateUser, AuthorizeAccess } from "../../middleware/Auth/Auth";
 
 const routes = () => {
   /**
    * @swagger
    * tags:
-   *   name: ConversationSession
-   *   description: ConversationSession management APIs
+   *   name: Exercise
+   *   description: Exercise management APIs
    */
 
   const router = express.Router();
 
   /**
    * @swagger
-   * /conversation-sessions/get:
+   * /exercises/get:
    *   get:
-   *     summary: Fetch a ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Fetch an Exercise
+   *     tags: [Exercise]
    *     parameters:
    *       - in: query
    *         name: query
@@ -30,20 +30,20 @@ const routes = () => {
     "/get",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findOne
+    ExerciseController.findOne
   );
 
   /**
    * @swagger
-   * /conversation-sessions/{id}:
+   * /exercises/{id}:
    *   get:
-   *     summary: Fetch ConversationSession by ID
-   *     tags: [ConversationSession]
+   *     summary: Fetch Exercise by ID
+   *     tags: [Exercise]
    *     parameters:
    *       - in: path
    *         name: id
    *         required: true
-   *         description: ConversationSession ID
+   *         description: Exercise ID
    *       - in: query
    *         name: query
    *         description: query
@@ -53,21 +53,21 @@ const routes = () => {
    *       400:
    *         description: Input Validation Error
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: Exercise Not Found
    */
   router.get(
     "/:id",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findById
+    ExerciseController.findById
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /exercises:
    *   get:
-   *     summary: Fetch ConversationSessions
-   *     tags: [ConversationSession]
+   *     summary: Fetch Exercises
+   *     tags: [Exercise]
    *     parameters:
    *       - in: query
    *         name: query
@@ -80,15 +80,15 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.findMany
+    ExerciseController.findMany
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /exercises:
    *   post:
-   *     summary: Create ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Create Exercise
+   *     tags: [Exercise]
    *     responses:
    *       201:
    *         description: Success
@@ -97,15 +97,15 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.create
+    ExerciseController.create
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /exercises:
    *   put:
-   *     summary: Update ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Update Exercise
+   *     tags: [Exercise]
    *     responses:
    *       200:
    *         description: Success
@@ -114,45 +114,45 @@ const routes = () => {
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin", "user"]),
-    ConversationSessionController.update
+    ExerciseController.update
   );
 
   /**
    * @swagger
-   * /conversation-sessions/restore:
-   *   put:
-   *     summary: Restore ConversationSession
-   *     tags: [ConversationSession]
+   * /exercises/restore:
+   *   patch:
+   *     summary: Restore Exercise
+   *     tags: [Exercise]
    *     responses:
    *       200:
    *         description: Success
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: Exercise Not Found
    */
   router.put(
     "/restore",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin"]),
-    ConversationSessionController.restore
+    ExerciseController.restore
   );
 
   /**
    * @swagger
-   * /conversation-sessions:
+   * /exercises:
    *   delete:
-   *     summary: Delete ConversationSession
-   *     tags: [ConversationSession]
+   *     summary: Delete Exercise
+   *     tags: [Exercise]
    *     responses:
    *       200:
    *         description: Success
    *       404:
-   *         description: ConversationSession Not Found
+   *         description: Exercise Not Found
    */
   router.delete(
     "/",
     AuthenticateUser,
     AuthorizeAccess(["system", "admin"]),
-    ConversationSessionController.delete
+    ExerciseController.delete
   );
 
   return router;
