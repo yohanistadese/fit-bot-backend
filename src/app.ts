@@ -92,3 +92,5 @@ const startServer = async () => {
 
 // Run server
 startServer();
+
+export { app };
