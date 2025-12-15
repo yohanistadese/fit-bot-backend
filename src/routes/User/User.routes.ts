@@ -103,8 +103,8 @@ const routes = () => {
    */
   router.get(
     "/:id",
-    AuthenticateUser,
-    AuthorizeAccess(["system", "admin"]),
+    // AuthenticateUser,
+    // AuthorizeAccess(["system", "admin"]),
     UserController.findById
   );
 
@@ -122,7 +122,12 @@ const routes = () => {
    *       200:
    *         description: Success
    */
-  router.get("/", AuthenticateUser, UserController.findMany);
+  router.get(
+    "/",
+    // AuthenticateUser,
+    // AuthorizeAccess(["system", "admin"]),
+    UserController.findMany
+  );
 
   /**
    * @swagger
