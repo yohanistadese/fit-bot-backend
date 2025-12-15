@@ -4,14 +4,24 @@ import {
   BadRequestError,
   InternalServerError,
   NotFoundError,
+  UnauthorizedError,
 } from "../../middleware/Error";
 import { NullishPropertiesOf } from "sequelize/types/utils";
 import { createTransaction } from "../../database/sequelize";
 import { User } from "../../models/User";
-import { LogActions } from "../../utilities/constants/Constants";
+import {
+  LogActions,
+  UserRole,
+  UserStatus,
+} from "../../utilities/constants/Constants";
 import { ActionLogService } from "../User";
 import { GlobalAuthOptionsNew } from "../../middleware/Auth/Auth";
 import { UserDAL } from "../../dals/User";
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import { parseExpiry } from "../../utilities/utilities";
+import LogService from "../Log/Log.service";
+import { env } from "../../config";
 
 const ModelName = "User";
 
@@ -271,6 +281,123 @@ class UserService {
         }
       );
     });
+  };
+
+  static telegramRegister = async (payload: Partial<User>): Promise<User> => {
+    let transaction: Transaction | null = null;
+    try {
+      transaction = await createTransaction();
+
+      if (
+        payload?.role === UserRole.SYSTEM ||
+        payload?.role === UserRole.ADMIN
+      ) {
+        throw new BadRequestError([
+          "System or Admin users cannot register via this endpoint",
+        ]);
+      }
+
+      if (payload.email) {
+        const existingEmail = await UserDAL.findOne({
+          where: { email: payload.email.toLowerCase() },
+        });
+        if (existingEmail) {
+          throw new BadRequestError(["Email Already Registered"]);
+        }
+      }
+
+      if (payload.telegram_user_id) {
+        const existingTelegram = await UserDAL.findOne({
+          where: { telegram_user_id: payload.telegram_user_id },
+        });
+        if (existingTelegram) {
+          throw new BadRequestError(["Telegram User Already Registered"]);
+        }
+      }
+
+      if (payload?.email) {
+        payload.email = payload.email.toLowerCase();
+      }
+      payload.status = UserStatus.PENDING;
+      payload.role = payload.role ?? UserRole.USER;
+
+      const user = await UserDAL.create(payload, transaction);
+
+      await ActionLogService.handleCreate({
+        action: `${ModelName} ${LogActions.CREATE}`,
+        object: ModelName,
+        prev_data: {},
+        new_data: user,
+      });
+
+      await transaction.commit();
+      return user;
+    } catch (error) {
+      if (transaction) await transaction.rollback();
+      throw error || new InternalServerError("Registration failed");
+    }
+  };
+
+  static telegramLogin = async (initData: string): Promise<any> => {
+    try {
+      const data: Record<string, string> = Object.fromEntries(
+        initData.split("&").map((pair) => pair.split("="))
+      );
+
+      const hash = data.hash;
+      delete data.hash;
+
+      // Verify Telegram data integrity
+      const secretKey = crypto
+        .createHash("sha256")
+        .update(env.TELEGRAM_BOT_TOKEN!)
+        .digest();
+      const checkString = Object.keys(data)
+        .sort()
+        .map((key) => `${key}=${data[key]}`)
+        .join("\n");
+
+      const hmac = crypto
+        .createHmac("sha256", secretKey)
+        .update(checkString)
+        .digest("hex");
+
+      if (hmac !== hash) {
+        throw new UnauthorizedError(
+          "Telegram login failed: Data verification error"
+        );
+      }
+
+      // Find existing user
+      let user = await UserDAL.findOne({
+        where: { telegram_user_id: data.id },
+      });
+
+      // If not exists, create new user
+      if (!user) {
+        const payload: Partial<User> = {
+          telegram_user_id: data.id,
+          telegram_user_name: data.username,
+          name: `${data.first_name} ${data.last_name || ""}`.trim(),
+          status: UserStatus.ACTIVE,
+          role: UserRole.USER,
+        };
+        user = await UserDAL.create(payload);
+      }
+
+      // Generate JWT token
+      const token = jwt.sign({ id: user.id }, process.env.AUTH_KEY!, {
+        expiresIn: parseExpiry(process.env.AUTH_KEY_EXPIRY!) / 1000,
+      });
+
+      const userData = user.toJSON();
+      delete userData.password;
+
+      return { token, user: userData };
+    } catch (error) {
+      LogService.LogError(`Telegram login failed, ${error}`);
+      throw error;
+    }
   };
 }
 

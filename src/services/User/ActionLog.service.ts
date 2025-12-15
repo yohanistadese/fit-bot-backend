@@ -11,7 +11,7 @@ import LogService from "../Log/Log.service";
 const ModelName = "Action Log";
 
 class ActionLogService {
-  static handleCreate(data: any) {
+  static async handleCreate(data: any) {
     if (!data.new_data) {
       data.new_data = {};
     }

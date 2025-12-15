@@ -136,8 +136,8 @@ const routes = () => {
    */
   router.post(
     "/",
-    // AuthenticateUser,
-    // AuthorizeAccess(["system", "admin"]),
+    AuthenticateUser,
+    AuthorizeAccess(["system", "admin"]),
     UserController.create
   );
 

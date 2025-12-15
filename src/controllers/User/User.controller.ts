@@ -4,8 +4,13 @@ import ServerResponse from "../../utilities/response/Response";
 import { ParseQuery } from "../../utilities/pagination/Pagination";
 import UserService from "../../services/User/User.service";
 import { UserDAL } from "../../dals/User";
-import { EmailRegex } from "../../utilities/constants/Constants";
-import { User } from "../../models/User";
+import {
+  EmailRegex,
+  UserRole,
+  UserStatus,
+} from "../../utilities/constants/Constants";
+import { User, UserProfile } from "../../models/User";
+import { result } from "lodash";
 
 const UserModelName = "User";
 
@@ -187,6 +192,126 @@ class UserController {
         startTime
       );
     }
+  }
+
+  static async getMe(request: any, response: Response) {
+    const startTime = new Date();
+
+    const user = request.user;
+    const userWithProfile = await UserService.findOne(user, {
+      where: { id: user.id },
+      include: [
+        {
+          model: UserProfile,
+          include: [
+            {
+              model: File,
+              attributes: ["id", "path"],
+            },
+          ],
+        },
+      ],
+    });
+    ServerResponse(
+      request,
+      response,
+      200,
+      userWithProfile,
+      "Success",
+      startTime
+    );
+  }
+
+  static register(request: any, response: Response) {
+    const startTime = new Date();
+
+    try {
+      const { initData } = request.body;
+      if (!initData) {
+        return ServerResponse(
+          request,
+          response,
+          400,
+          null,
+          "initData is required",
+          startTime
+        );
+      }
+
+      // Parse initData
+      const telegramData: Record<string, string> = Object.fromEntries(
+        initData.split("&").map((pair: any) => pair.split("="))
+      );
+
+      // Map Telegram fields to User model
+      const payload: Partial<User> = {
+        telegram_user_id: telegramData.id,
+        telegram_user_name: telegramData.username,
+        name: `${telegramData.first_name ?? ""} ${
+          telegramData.last_name ?? ""
+        }`.trim(),
+        role: UserRole.USER,
+        ip_address: request.ip,
+      };
+
+      UserService.telegramRegister(payload)
+        .then((result: any) => {
+          ServerResponse(request, response, 201, result, "Success", startTime);
+        })
+        .catch((err: any) => {
+          ServerResponse(
+            request,
+            response,
+            err.statusCode || 500,
+            err.payload || err,
+            "Error",
+            startTime
+          );
+        });
+    } catch (err) {
+      ServerResponse(
+        request,
+        response,
+        500,
+        err,
+        "Unexpected error",
+        startTime
+      );
+    }
+  }
+
+  static login(request: any, response: Response) {
+    const startTime = new Date();
+    const schema = Joi.object({
+      initData: Joi.string().required(),
+    });
+
+    const { error, value } = schema.validate(request.body);
+    if (error) {
+      return ServerResponse(
+        request,
+        response,
+        400,
+        { details: error.details },
+        "Input validation error",
+        startTime
+      );
+    }
+
+    UserService.telegramLogin(value.initData)
+      .then((result) =>
+        ServerResponse(request, response, 200, result, "Success", startTime)
+      )
+      .catch((err) =>
+        ServerResponse(
+          request,
+          response,
+          err.statusCode || 500,
+          err.payload || err,
+          "Error",
+          startTime
+        )
+      );
   }
 
   static updateMe(request: any, response: Response) {

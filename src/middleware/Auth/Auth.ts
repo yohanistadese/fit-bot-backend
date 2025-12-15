@@ -6,6 +6,7 @@ import { UserDAL } from "../../dals/User";
 import ServerResponse from "../../utilities/response/Response";
 import { User } from "../../models/User";
 import { Op } from "sequelize";
+import { NextFunction } from "express";
 
 const getUserIp = (req: any) => {
   const rawIp =
@@ -38,27 +39,61 @@ export const VerifyJWT = async (auth: string): Promise<any> => {
   });
 };
 
-export const AuthenticateUser = async (req: any, res: any, next: any) => {
+export const AuthenticateUser = async (
+  request: any,
+  response: any,
+  next: any
+) => {
   const startTime = new Date();
 
   try {
-    const token = req.headers["authorization"];
-    const data = await VerifyJWT(token);
-
-    // find user
-    const user = await UserDAL.findOne({
-      where: { id: data.id },
-    });
-
-    if (!user) {
-      return ServerResponse(req, res, 401, null, "Invalid Token", startTime);
+    const authHeader = request.headers["authorization"];
+    if (!authHeader) {
+      return ServerResponse(
+        request,
+        response,
+        401,
+        null,
+        "No token provided",
+        startTime
+      );
     }
 
-    // check status
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+      return ServerResponse(
+        request,
+        response,
+        401,
+        null,
+        "Invalid authorization format",
+        startTime
+      );
+    }
+
+    const data: any = await VerifyJWT(token);
+
+    const user = data.telegram_user_id
+      ? await UserDAL.findOne({
+          where: { telegram_user_id: data.telegram_user_id },
+        })
+      : await UserDAL.findOne({ where: { id: data.id } });
+
+    if (!user) {
+      return ServerResponse(
+        request,
+        response,
+        401,
+        null,
+        "Invalid token",
+        startTime
+      );
+    }
+
     if (user.status !== UserStatus.ACTIVE) {
       return ServerResponse(
-        req,
-        res,
+        request,
+        response,
         401,
         [
           "User account has been deactivated! Please contact System Administrators",
@@ -68,15 +103,18 @@ export const AuthenticateUser = async (req: any, res: any, next: any) => {
       );
     }
 
-    // remove unwanted fields
     const userData = user.toJSON();
-    userData.ip_address = getUserIp(req);
-    req.user = userData;
+    delete userData.password;
+    delete userData.last_used_key;
+
+    userData.ip_address = getUserIp(request);
+    request.user = userData;
+
     next();
   } catch (error) {
     return ServerResponse(
-      req,
-      res,
+      request,
+      response,
       401,
       error,
       "Authorization Error",
