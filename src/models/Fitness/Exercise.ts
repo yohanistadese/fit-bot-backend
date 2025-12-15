@@ -9,6 +9,9 @@ export class Exercise extends Model {
   public secondary_muscle_groups!: object;
   public equipment!: string;
   public difficulty!: string;
+  public reps!: number;
+  public sets!: number;
+  public rest!: number;
   public metadata!: object;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -25,12 +28,11 @@ export default (sequelize: Sequelize) => {
       },
       name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       slug: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
+        allowNull: true,
       },
       gif_url: {
         type: DataTypes.STRING,
@@ -50,6 +52,18 @@ export default (sequelize: Sequelize) => {
       },
       difficulty: {
         type: DataTypes.STRING,
+        allowNull: true,
+      },
+      reps: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      sets: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      rest: {
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
       metadata: {

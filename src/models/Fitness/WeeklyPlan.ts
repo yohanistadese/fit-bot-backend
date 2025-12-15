@@ -1,10 +1,12 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
+import { GeneratedBy } from "../../utilities/constants/Constants";
 
 export class WeeklyPlan extends Model {
   public id!: string;
   public user_id!: string;
   public start_date!: Date;
   public end_date!: Date;
+  public week_number!: number;
   public generated_by!: string;
   public metadata!: object | null;
   public readonly createdAt!: Date;
@@ -34,7 +36,14 @@ export default (sequelize: Sequelize) => {
       },
       generated_by: {
         type: DataTypes.STRING,
-        allowNull: true,
+        defaultValue: GeneratedBy.AGENT,
+        validate: {
+          isIn: [Object.values(GeneratedBy)],
+        },
+      },
+      week_number: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
       metadata: {
         type: DataTypes.JSONB,

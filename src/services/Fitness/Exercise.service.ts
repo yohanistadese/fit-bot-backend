@@ -67,6 +67,61 @@ class ExerciseService {
     });
   };
 
+  static async bulkCreate(
+    user: User,
+    payload: {
+      exercises: {
+        name: string;
+        slug?: string;
+        gif_url?: string;
+        primary_muscle_group?: string;
+        secondary_muscle_groups?: object;
+        equipment?: string;
+        difficulty?: string;
+        reps?: number;
+        sets?: number;
+        rest?: number;
+        metadata?: object;
+      }[];
+    }
+  ): Promise<{ rows: Exercise[]; count: number }> {
+    try {
+      const normalizedExercises = payload.exercises.map((e) => ({
+        ...e,
+        slug: e.slug || e.name.toLowerCase().replace(/\s+/g, "-"),
+      }));
+
+      const rows = await Exercise.bulkCreate(normalizedExercises, {
+        updateOnDuplicate: [
+          "name",
+          "gif_url",
+          "primary_muscle_group",
+          "secondary_muscle_groups",
+          "equipment",
+          "difficulty",
+          "metadata",
+        ],
+      });
+
+      ActionLogService.handleCreate({
+        action: LogActions.CREATE,
+        object: "Exercise",
+        prev_data: {},
+        new_data: { message: `Bulk exercise created`, count: rows.length },
+        user_id: user.id,
+        user_email: user?.email,
+        ip_address: user?.ip_address,
+      });
+
+      return {
+        rows,
+        count: rows.length,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   static findOne = (user: User, options: any, paranoid?: boolean) => {
     return new Promise((resolve, reject) => {
       const auth = ExerciseService.AuthOptions(user, options, paranoid);

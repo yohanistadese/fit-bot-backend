@@ -3,7 +3,7 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 export class PlanItem extends Model {
   public id!: string;
   public meal_id!: string;
-  public plan_day_id!: string;
+  public weekly_plan_id!: string;
   public exercise_id!: string;
   public user_id!: string;
   public type!: string;
@@ -12,6 +12,9 @@ export class PlanItem extends Model {
   public scheduled_time!: string;
   public order_index!: number;
   public is_overridden!: boolean;
+  public reps!: number;
+  public sets!: number;
+  public rest!: number;
   public metadata!: object;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -30,13 +33,13 @@ export default (sequelize: Sequelize) => {
         type: DataTypes.UUID,
         allowNull: true,
       },
-      plan_day_id: {
+      weekly_plan_id: {
         type: DataTypes.UUID,
-        allowNull: false,
+        allowNull: true,
       },
       exercise_id: {
         type: DataTypes.UUID,
-        allowNull: false,
+        allowNull: true,
       },
       user_id: {
         type: DataTypes.UUID,
@@ -44,11 +47,11 @@ export default (sequelize: Sequelize) => {
       },
       type: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       title: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       description: {
         type: DataTypes.TEXT,
@@ -66,6 +69,18 @@ export default (sequelize: Sequelize) => {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
+      },
+      reps: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      sets: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      rest: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
       metadata: {
         type: DataTypes.JSONB,

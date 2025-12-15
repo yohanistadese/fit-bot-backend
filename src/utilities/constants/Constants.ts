@@ -61,6 +61,11 @@ export const Gender = {
   OTHER: "other",
 };
 
+export const GeneratedBy = {
+  AGENT: "agent",
+  ADMIN: "admin",
+};
+
 // -------------------- VERIFICATION / NOTIFICATION --------------------
 export const VerificationType = {
   EMAIL_VERIFICATION: "email_verification",

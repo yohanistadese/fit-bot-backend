@@ -35,9 +35,9 @@ class PlanItemService {
             async.parallel(
               {
                 planDay: (cb: Function) => {
-                  PlanDayDAL.findOne({ where: { id: payload.plan_day_id } })
+                  PlanDayDAL.findOne({ where: { id: payload.weekly_plan_id } })
                     .then((pd) => {
-                      if (!pd) cb(new NotFoundError("Plan Day not found"));
+                      if (!pd) cb(new NotFoundError("Week not found"));
                       else cb(null, pd);
                     })
                     .catch((e) => cb(new InternalServerError(e)));
@@ -67,7 +67,7 @@ class PlanItemService {
             if (!payload.order_index) return done(null);
             PlanItemDAL.findOne({
               where: {
-                plan_day_id: payload.plan_day_id,
+                weekly_plan_id: payload.weekly_plan_id,
                 order_index: payload.order_index,
               },
             })
@@ -75,7 +75,7 @@ class PlanItemService {
                 if (existing)
                   done(
                     new BadRequestError([
-                      `${ModelName} with this order_index already exists for the day`,
+                      `${ModelName} with this order_index already exists for the week`,
                     ])
                   );
                 else done(null);
@@ -107,6 +107,46 @@ class PlanItemService {
       );
     });
   };
+
+  static async bulkCreate(
+    user: User,
+    payload: {
+      planItems: {
+        meal_id?: string;
+        weekly_plan_id: string;
+        exercise_id: string;
+        user_id: string;
+        type?: string;
+        title?: string;
+        description?: string;
+        scheduled_time?: string;
+        order_index?: number;
+        is_overridden?: boolean;
+        reps?: number;
+        sets?: number;
+        rest?: number;
+        metadata?: object;
+      }[];
+    }
+  ): Promise<{ rows: PlanItem[]; count: number }> {
+    try {
+      const rows = await PlanItem.bulkCreate(payload.planItems);
+
+      ActionLogService.handleCreate({
+        action: LogActions.CREATE,
+        object: "Plan Item",
+        prev_data: {},
+        new_data: { message: "Bulk plan items created", count: rows.length },
+        user_id: user.id,
+        user_email: user?.email,
+        ip_address: user?.ip_address,
+      });
+
+      return { rows, count: rows.length };
+    } catch (error) {
+      throw error;
+    }
+  }
 
   static findOne = (user: User, options: any, paranoid?: boolean) => {
     return new Promise((resolve, reject) => {
