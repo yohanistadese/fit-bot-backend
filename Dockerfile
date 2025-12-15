@@ -10,7 +10,7 @@ RUN npm ci --force
 COPY . .
 
 # Expose application port
-EXPOSE 9000
+EXPOSE 80
 
 # Start the app
 CMD ["npm", "run", "start"]
