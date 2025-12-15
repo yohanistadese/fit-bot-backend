@@ -82,6 +82,35 @@ class PlanDayService {
     });
   };
 
+  static async bulkCreate(
+    user: User,
+    payload: {
+      planDays: {
+        weekly_plan_id?: string;
+        user_id: string;
+        date: Date;
+      }[];
+    }
+  ): Promise<{ rows: PlanDay[]; count: number }> {
+    try {
+      const rows = await PlanDay.bulkCreate(payload.planDays);
+
+      ActionLogService.handleCreate({
+        action: LogActions.CREATE,
+        object: "PlanDay",
+        prev_data: {},
+        new_data: { message: "Bulk plan days created", count: rows.length },
+        user_id: user.id,
+        user_email: user?.email,
+        ip_address: user?.ip_address,
+      });
+
+      return { rows, count: rows.length };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   static findOne = (user: User, options: any, paranoid?: boolean) => {
     return new Promise((resolve, reject) => {
       const auth = PlanDayService.AuthOptions(user, options, paranoid);

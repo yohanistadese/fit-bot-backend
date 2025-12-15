@@ -7,9 +7,6 @@ export class WorkLog extends Model {
   public exercise_id!: string;
   public performed_at!: Date;
   public actual_sets!: object;
-  public actual_reps!: object;
-  public actual_weight!: number;
-  public rpe!: number;
   public notes!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -36,25 +33,13 @@ export default (sequelize: Sequelize) => {
         type: DataTypes.UUID,
         allowNull: false,
       },
-      performed_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-      },
       actual_sets: {
         type: DataTypes.JSONB,
         allowNull: true,
       },
-      actual_reps: {
-        type: DataTypes.JSONB,
-        allowNull: true,
-      },
-      actual_weight: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-      },
-      rpe: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
+      performed_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
       },
       notes: {
         type: DataTypes.TEXT,

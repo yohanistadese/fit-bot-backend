@@ -28,6 +28,9 @@ class UserService {
       async.waterfall(
         [
           (done: Function) => {
+            if (!payload.email) {
+              return done(null);
+            }
             UserDAL.findOne({ where: { email: payload.email } })
               .then((existing) => {
                 if (existing) {
@@ -38,12 +41,12 @@ class UserService {
                   );
                 } else done(null);
               })
-              .catch((error) => done(new InternalServerError(error)));
+              .catch((error) => done(error));
           },
           (done: Function) => {
             UserDAL.create(payload)
               .then((result) => done(null, result))
-              .catch((error) => done(new InternalServerError(error)));
+              .catch((error) => done(error));
           },
           (result: any, done: Function) => {
             ActionLogService.handleCreate({
@@ -51,7 +54,7 @@ class UserService {
               object: ModelName,
               prev_data: {},
               new_data: result,
-              user_id: user.id,
+              user_id: user?.id ?? null,
               user_email: user?.email,
               ip_address: user?.ip_address,
             });

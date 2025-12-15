@@ -1,6 +1,7 @@
 import express from "express";
 import { UserController } from "../../controllers/User";
 import { AuthenticateUser, AuthorizeAccess } from "../../middleware/Auth/Auth";
+import { WeeklyPlanController } from "../../controllers/Fitness";
 
 const routes = () => {
   /**
@@ -32,6 +33,30 @@ const routes = () => {
     AuthorizeAccess(["system", "admin"]),
     UserController.findOne
   );
+
+  /**
+   * @swagger
+   * /users/{user_id}/plans:
+   *   post:
+   *     summary: Create weekly plan
+   *     tags: [User]
+   *     parameters:
+   *       - in: path
+   *         name: user_id
+   *         required: true
+   *         schema:
+   *           type: string
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *     responses:
+   *       201:
+   *         description: Created
+   */
+  router.post("/:user_id/plans", WeeklyPlanController.createWeeklyPlan);
 
   /**
    * @swagger
@@ -111,8 +136,8 @@ const routes = () => {
    */
   router.post(
     "/",
-    AuthenticateUser,
-    AuthorizeAccess(["system", "admin"]),
+    // AuthenticateUser,
+    // AuthorizeAccess(["system", "admin"]),
     UserController.create
   );
 

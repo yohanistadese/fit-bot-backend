@@ -1,4 +1,4 @@
-import { Transaction } from "sequelize";
+import { Op, Transaction } from "sequelize";
 import async from "async";
 import {
   BadRequestError,
@@ -66,6 +66,57 @@ class MealService {
       );
     });
   };
+
+  static async bulkCreate(
+    user: User,
+    payload: {
+      meals: {
+        name: string;
+        description?: string;
+        calories?: number;
+        protein?: number;
+        carbs?: number;
+        fats?: number;
+        tags?: object;
+        metadata?: object;
+      }[];
+    }
+  ): Promise<{ rows: Meal[]; count: number }> {
+    try {
+      const normalizedMeals = payload.meals.map((m) => ({
+        ...m,
+        name: m.name.trim(),
+      }));
+
+      const existingMeals = await Meal.findAll({
+        where: {
+          name: { [Op.in]: normalizedMeals.map((m) => m.name) },
+        },
+      });
+
+      const existingNames = existingMeals.map((m) => m.name.toLowerCase());
+
+      const mealsToCreate = normalizedMeals.filter(
+        (m) => !existingNames.includes(m.name.toLowerCase())
+      );
+
+      const rows = await Meal.bulkCreate(mealsToCreate);
+
+      ActionLogService.handleCreate({
+        action: LogActions.CREATE,
+        object: "Meal",
+        prev_data: {},
+        new_data: { message: "Bulk meal created", count: rows.length },
+        user_id: user.id,
+        user_email: user?.email,
+        ip_address: user?.ip_address,
+      });
+
+      return { rows, count: rows.length };
+    } catch (error) {
+      throw error;
+    }
+  }
 
   static findOne = (user: User, options: any, paranoid?: boolean) => {
     return new Promise((resolve, reject) => {
