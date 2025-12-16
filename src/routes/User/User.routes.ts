@@ -122,7 +122,12 @@ const routes = () => {
    *       200:
    *         description: Success
    */
-  router.get("/", UserController.findMany);
+  router.get(
+    "/",
+    // AuthenticateUser,
+    // AuthorizeAccess(["system", "admin"]),
+    UserController.findMany
+  );
 
   /**
    * @swagger
