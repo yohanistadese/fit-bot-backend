@@ -10,6 +10,7 @@ export class Meal extends Model {
   public fats!: number;
   public tags!: object;
   public metadata!: object;
+  public date!: Date;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -50,6 +51,10 @@ export default (sequelize: Sequelize) => {
       tags: {
         type: DataTypes.JSONB,
         allowNull: true,
+      },
+      date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
       },
       metadata: {
         type: DataTypes.JSONB,

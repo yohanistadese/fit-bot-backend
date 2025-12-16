@@ -24,89 +24,39 @@ class PlanItemService {
     return GlobalAuthOptionsNew(user, options, null, null, paranoid);
   };
 
-  static create = (
+  static async create(
     user: User,
     payload: Omit<PlanItem, NullishPropertiesOf<PlanItem>>
-  ): Promise<PlanItem> => {
-    return new Promise((resolve, reject) => {
-      async.waterfall(
-        [
-          (done: Function) => {
-            async.parallel(
-              {
-                planDay: (cb: Function) => {
-                  PlanDayDAL.findOne({ where: { id: payload.weekly_plan_id } })
-                    .then((pd) => {
-                      if (!pd) cb(new NotFoundError("Week not found"));
-                      else cb(null, pd);
-                    })
-                    .catch((e) => cb(new InternalServerError(e)));
-                },
-                exercise: (cb: Function) => {
-                  ExerciseDAL.findOne({ where: { id: payload.exercise_id } })
-                    .then((ex) => {
-                      if (!ex) cb(new NotFoundError("Exercise not found"));
-                      else cb(null, ex);
-                    })
-                    .catch((e) => cb(new InternalServerError(e)));
-                },
-                meal: (cb: Function) => {
-                  if (!payload.meal_id) return cb(null, null);
-                  MealDAL.findOne({ where: { id: payload.meal_id } })
-                    .then((meal) => cb(null, meal))
-                    .catch((e) => cb(new InternalServerError(e)));
-                },
-              },
-              (err: any) => {
-                if (err) done(err);
-                else done(null);
-              }
-            );
-          },
-          (done: Function) => {
-            if (!payload.order_index) return done(null);
-            PlanItemDAL.findOne({
-              where: {
-                weekly_plan_id: payload.weekly_plan_id,
-                order_index: payload.order_index,
-              },
-            })
-              .then((existing) => {
-                if (existing)
-                  done(
-                    new BadRequestError([
-                      `${ModelName} with this order_index already exists for the week`,
-                    ])
-                  );
-                else done(null);
-              })
-              .catch((e) => done(new InternalServerError(e)));
-          },
-          (done: Function) => {
-            PlanItemDAL.create(payload)
-              .then((result) => done(null, result))
-              .catch((e) => done(new InternalServerError(e)));
-          },
-          (result: any, done: Function) => {
-            ActionLogService.handleCreate({
-              action: `${ModelName} ${LogActions.CREATE}`,
-              object: ModelName,
-              prev_data: {},
-              new_data: result,
-              user_id: user.id,
-              user_email: user?.email,
-              ip_address: user?.ip_address,
-            });
-            done(null, result);
-          },
-        ],
-        (error, result: any) => {
-          if (!error) resolve(result);
-          else reject(error);
-        }
-      );
+  ): Promise<PlanItem> {
+    if (payload.order_index) {
+      const existing = await PlanItemDAL.findOne({
+        where: {
+          weekly_plan_id: payload.weekly_plan_id,
+          order_index: payload.order_index,
+        },
+      });
+
+      if (existing) {
+        throw new BadRequestError([
+          `${ModelName} with this order index already exists for the week`,
+        ]);
+      }
+    }
+
+    const result = await PlanItemDAL.create(payload);
+
+    ActionLogService.handleCreate({
+      action: `${ModelName} ${LogActions.CREATE}`,
+      object: ModelName,
+      prev_data: {},
+      new_data: result,
+      user_id: user.id,
+      user_email: user?.email,
+      ip_address: user?.ip_address,
     });
-  };
+
+    return result;
+  }
 
   static async bulkCreate(
     user: User,

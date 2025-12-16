@@ -269,7 +269,7 @@ class WorkLogController {
     }
   }
 
-  static async createWeeklyPlan(request: any, response: Response) {
+  static async _createWeeklyPlan(request: any, response: Response) {
     const startTime = new Date();
 
     const schema = Joi.object({
@@ -404,6 +404,141 @@ class WorkLogController {
         response,
         201,
         { weeklyPlan, exercises: exerciseResult.rows, meals: mealResult.rows },
+        "Weekly plan created",
+        startTime
+      );
+    } catch (err: any) {
+      return ServerResponse(
+        request,
+        response,
+        err.statusCode || 500,
+        err.payload || { message: err.message },
+        "Error",
+        startTime
+      );
+    }
+  }
+
+  static async createWeeklyPlan(request: any, response: Response) {
+    const startTime = new Date();
+
+    const schema = Joi.object({
+      user_id: Joi.string().guid().required(),
+    });
+
+    const { error, value } = schema.validate(request.params, {
+      abortEarly: false,
+    });
+    if (error) {
+      return ServerResponse(
+        request,
+        response,
+        400,
+        { details: error.details },
+        "Input validation error",
+        startTime
+      );
+    }
+
+    const { user_id } = value;
+    const { exercises = [], meals = [] } = request.body;
+
+    try {
+      const user = await UserDAL.findById(user_id);
+      if (!user)
+        return ServerResponse(
+          request,
+          response,
+          404,
+          null,
+          "User not found",
+          startTime
+        );
+
+      const lastWeek = await WeeklyPlanDAL.findOne({
+        where: { user_id },
+        order: [["week_number", "DESC"]],
+      });
+
+      const weekNumber = lastWeek ? lastWeek.week_number + 1 : 1;
+
+      const startDate = new Date();
+      const endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 6);
+
+      const weeklyPlan = await WeeklyPlanService.create(user, {
+        user_id,
+        start_date: startDate,
+        end_date: endDate,
+        week_number: weekNumber,
+        generated_by: GeneratedBy.AGENT,
+      } as any);
+
+      let orderIndex = 1;
+
+      const totalDays = Math.max(exercises.length, meals.length);
+
+      for (let i = 0; i < totalDays; i++) {
+        const planDate = new Date(startDate);
+        planDate.setDate(startDate.getDate() + i);
+
+        const exerciseInput = exercises[i];
+        const mealInput = meals[i];
+
+        let exerciseId = null;
+        let mealId = null;
+
+        if (exerciseInput) {
+          const exercise = await ExerciseService.create(user, {
+            name: exerciseInput.name,
+            slug: exerciseInput.slug,
+            gif_url: exerciseInput.gif_url,
+            primary_muscle_group: exerciseInput.primary_muscle_group,
+            secondary_muscle_groups: exerciseInput.secondary_muscle_groups,
+            equipment: exerciseInput.equipment,
+            difficulty: exerciseInput.difficulty,
+            sets: exerciseInput.metadata?.sets,
+            reps: exerciseInput.metadata?.reps,
+            rest: exerciseInput.metadata?.rest,
+            metadata: exerciseInput.metadata ?? {},
+            date: planDate,
+          } as any);
+
+          exerciseId = exercise.id;
+        }
+
+        if (mealInput) {
+          const meal = await MealService.create(user, {
+            name: mealInput.name,
+            description: mealInput.description,
+            calories: mealInput.calories,
+            protein: mealInput.protein,
+            carbs: mealInput.carbs,
+            fats: mealInput.fats,
+            tags: mealInput.tags,
+            metadata: mealInput.metadata ?? {},
+            date: planDate,
+          } as any);
+
+          mealId = meal.id;
+        }
+
+        await PlanItemService.create(user, {
+          weekly_plan_id: weeklyPlan.id,
+          user_id,
+          exercise_id: exerciseId ?? null,
+          meal_id: mealId ?? null,
+          date: planDate,
+          order_index: orderIndex++,
+          metadata: {},
+        } as any);
+      }
+
+      return ServerResponse(
+        request,
+        response,
+        201,
+        { weeklyPlan },
         "Weekly plan created",
         startTime
       );

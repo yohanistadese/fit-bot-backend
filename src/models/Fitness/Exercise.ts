@@ -13,6 +13,7 @@ export class Exercise extends Model {
   public sets!: number;
   public rest!: number;
   public metadata!: object;
+  public date!: Date;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -65,6 +66,10 @@ export default (sequelize: Sequelize) => {
       rest: {
         type: DataTypes.INTEGER,
         allowNull: true,
+      },
+      date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
       },
       metadata: {
         type: DataTypes.JSONB,
