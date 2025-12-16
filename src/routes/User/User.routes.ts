@@ -29,8 +29,8 @@ const routes = () => {
    */
   router.get(
     "/get",
-    AuthenticateUser,
-    AuthorizeAccess(["system", "admin"]),
+    // AuthenticateUser,
+    // AuthorizeAccess(["system", "admin"]),
     UserController.findOne
   );
 
