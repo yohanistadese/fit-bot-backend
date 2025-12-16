@@ -4,9 +4,11 @@ WORKDIR /usr/src/api
 
 # Copy package files and install dependencies
 COPY package*.json ./
-RUN npm ci --force
 
-# Copy the rest of the application
+# Install dependencies
+RUN npm install --force
+
+# Copy rest of the code
 COPY . .
 
 # Expose application port
